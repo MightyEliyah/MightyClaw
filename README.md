@@ -1,4 +1,4 @@
-# 🦞 OpenClaw — Personal AI Assistant
+# 🦞 Mighty Craw — Personal AI Assistant
 
 <p align="center">
     <picture>

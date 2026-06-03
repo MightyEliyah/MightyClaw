@@ -1,17 +1,17 @@
 {
-  "name": "openclaw",
+  "name": "mightyclaw",
   "version": "2026.6.2",
-  "description": "Multi-channel AI gateway with extensible messaging integrations",
+  "description": "Mighty Craw — personal AI assistant gateway",
   "keywords": [],
-  "homepage": "https://github.com/openclaw/openclaw#readme",
+  "homepage": "https://github.com/MightyEliyah/MightyClaw#readme",
   "bugs": {
-    "url": "https://github.com/openclaw/openclaw/issues"
+    "url": "https://github.com/MightyEliyah/MightyClaw/issues"
   },
   "license": "MIT",
-  "author": "",
+  "author": "MightyEliyah",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openclaw/openclaw.git"
+    "url": "git+https://github.com/MightyEliyah/MightyClaw.git"
   },
   "bin": {
     "openclaw": "openclaw.mjs"
