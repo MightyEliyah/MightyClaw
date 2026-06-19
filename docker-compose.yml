@@ -127,3 +127,21 @@ services:
     entrypoint: ["node", "dist/index.js"]
     depends_on:
       - openclaw-gateway
+
+  mighty-welcome:
+    image: node:24-slim
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      WELCOME_CHANNEL_ID: ${WELCOME_CHANNEL_ID:-}
+      OPENCLAW_GATEWAY_URL: http://openclaw-gateway:18789
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
+    volumes:
+      - ./scripts/welcome-listener.mjs:/app/welcome-listener.mjs:ro
+    working_dir: /app
+    command: ["node", "welcome-listener.mjs"]
+    depends_on:
+      - openclaw-gateway
