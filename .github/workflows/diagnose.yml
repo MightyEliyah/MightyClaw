@@ -16,17 +16,11 @@ jobs:
           timeout: 60s
           script: |
             cd ~/mighty-craw
-            echo "=== Fix permissions ==="
-            chmod -R 777 ~/.openclaw
+            echo "=== openclaw.json content ==="
+            cat ~/.openclaw/openclaw.json
             echo ""
-            echo "=== openclaw.json exists? ==="
-            ls -la ~/.openclaw/openclaw.json 2>/dev/null || echo "FILE NOT FOUND"
+            echo "=== DISCORD token in container env ==="
+            docker compose exec -T openclaw-gateway printenv DISCORD_BOT_TOKEN | cut -c1-10 || echo "NOT FOUND"
             echo ""
-            echo "=== Gateway full startup logs ==="
-            docker compose logs --tail=80 openclaw-gateway 2>&1 | head -80
-            echo ""
-            echo "=== Restart gateway ==="
-            docker compose restart openclaw-gateway
-            sleep 10
-            echo "=== Gateway logs after restart ==="
-            docker compose logs --tail=30 openclaw-gateway 2>&1
+            echo "=== Gateway logs from beginning ==="
+            docker compose logs --no-log-prefix openclaw-gateway 2>&1 | grep -v "origin not allowed\|ws\]\|task-registry" | head -60
