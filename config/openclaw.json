@@ -45,11 +45,9 @@
       dmPolicy: "pairing",
 
       guilds: {
-        // Replace YOUR_SERVER_ID with your Discord server's ID
-        // YOUR_SERVER_ID: {
-        //   requireMention: false,
-        //   welcomeChannelId: "YOUR_WELCOME_CHANNEL_ID",
-        // },
+        "1503727463858049085": {
+          requireMention: false,
+        },
       },
 
       streaming: {
