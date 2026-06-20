@@ -16,11 +16,17 @@ jobs:
           timeout: 60s
           script: |
             cd ~/mighty-craw
-            echo "=== openclaw.json on host ==="
-            cat ~/.openclaw/openclaw.json 2>/dev/null || echo "FILE NOT FOUND"
+            echo "=== Fix permissions ==="
+            chmod -R 777 ~/.openclaw
             echo ""
-            echo "=== DISCORD_BOT_TOKEN set? ==="
-            grep DISCORD_BOT_TOKEN .env | sed 's/=.*/=***/'
+            echo "=== openclaw.json exists? ==="
+            ls -la ~/.openclaw/openclaw.json 2>/dev/null || echo "FILE NOT FOUND"
             echo ""
-            echo "=== Gateway startup logs ==="
-            docker compose logs --tail=100 openclaw-gateway 2>&1 | grep -i "discord\|error\|start\|channel\|token\|config" | head -40
+            echo "=== Gateway full startup logs ==="
+            docker compose logs --tail=80 openclaw-gateway 2>&1 | head -80
+            echo ""
+            echo "=== Restart gateway ==="
+            docker compose restart openclaw-gateway
+            sleep 10
+            echo "=== Gateway logs after restart ==="
+            docker compose logs --tail=30 openclaw-gateway 2>&1
