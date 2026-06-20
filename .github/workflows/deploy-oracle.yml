@@ -43,9 +43,10 @@ jobs:
               > .env
 
             # Deploy gateway config (state dir is mounted as volume)
-            mkdir -p ~/.openclaw/state ~/.openclaw/logs/stability
-            cp config/openclaw.json ~/.openclaw/openclaw.json
-            chmod -R 775 ~/.openclaw
+            sudo mkdir -p ~/.openclaw/state ~/.openclaw/logs ~/.openclaw/logs/stability
+            sudo cp config/openclaw.json ~/.openclaw/openclaw.json
+            sudo chmod -R 777 ~/.openclaw
+            sudo chown -R ubuntu:ubuntu ~/.openclaw
 
             # Rebuild and restart (no sudo — ubuntu is in docker group)
             docker compose build --pull
