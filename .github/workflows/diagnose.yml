@@ -16,11 +16,11 @@ jobs:
           timeout: 60s
           script: |
             cd ~/mighty-craw
-            echo "=== openclaw.json content ==="
-            cat ~/.openclaw/openclaw.json
+            echo "=== .env on disk ==="
+            cat .env | sed 's/=.*/=***/'
             echo ""
-            echo "=== DISCORD token in container env ==="
-            docker compose exec -T openclaw-gateway printenv DISCORD_BOT_TOKEN | cut -c1-10 || echo "NOT FOUND"
+            echo "=== All env vars in container with DISCORD or OPENCLAW ==="
+            docker compose exec -T openclaw-gateway printenv | grep -i "discord\|openclaw\|openrouter" | sed 's/=.*/=***/'
             echo ""
-            echo "=== Gateway logs from beginning ==="
-            docker compose logs --no-log-prefix openclaw-gateway 2>&1 | grep -v "origin not allowed\|ws\]\|task-registry" | head -60
+            echo "=== Full gateway startup logs (unfiltered) ==="
+            docker compose logs --no-log-prefix --since=10m openclaw-gateway 2>&1 | head -80
