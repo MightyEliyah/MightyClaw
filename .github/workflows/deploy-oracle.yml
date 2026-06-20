@@ -46,9 +46,9 @@ jobs:
             cp config/openclaw.json ~/.openclaw/openclaw.json
             chmod -R 775 ~/.openclaw
 
-            # Rebuild and restart
-            sudo docker compose build --pull
-            sudo docker compose up -d --remove-orphans
+            # Rebuild and restart (no sudo — ubuntu is in docker group)
+            docker compose build --pull
+            docker compose up -d --remove-orphans
 
             # Wait for gateway health
             echo "Waiting for gateway..."
@@ -60,4 +60,4 @@ jobs:
               sleep 5
             done
 
-            sudo docker compose ps
+            docker compose ps
