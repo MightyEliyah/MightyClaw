@@ -1,0 +1,58 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - ".agents/**"
+      - "skills/**"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-oracle
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to Oracle server
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ubuntu
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          timeout: 300s
+          script: |
+            set -euo pipefail
+
+            cd ~/mighty-craw
+            git pull origin main
+
+            # Write .env from GitHub secrets
+            cat > .env <<'ENVEOF'
+            OPENCLAW_GATEWAY_TOKEN=${{ secrets.OPENCLAW_GATEWAY_TOKEN }}
+            OPENROUTER_API_KEY=${{ secrets.OPEN_ROUTER_API }}
+            DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+            WELCOME_CHANNEL_ID=${{ secrets.WELCOME_CHANNEL_ID }}
+            ENVEOF
+
+            # Rebuild and restart
+            sudo docker compose build --pull
+            sudo docker compose up -d --remove-orphans
+
+            # Wait for gateway health
+            echo "Waiting for gateway..."
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:18789/healthz >/dev/null 2>&1; then
+                echo "Gateway is up!"
+                break
+              fi
+              sleep 5
+            done
+
+            sudo docker compose ps
