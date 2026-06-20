@@ -1,0 +1,37 @@
+name: Setup Oracle Server (run once)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: Initial server setup
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Setup server via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ubuntu
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          timeout: 300s
+          script: |
+            set -euo pipefail
+
+            # Install Docker
+            curl -fsSL https://get.docker.com | sh
+            sudo usermod -aG docker ubuntu
+            sudo systemctl enable docker
+            sudo systemctl start docker
+
+            # Open firewall ports
+            sudo iptables -I INPUT -p tcp --dport 18789 -j ACCEPT
+            sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+            sudo iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+            sudo apt-get install -y iptables-persistent
+            sudo netfilter-persistent save
+
+            # Clone the repo
+            git clone https://github.com/MightyEliyah/MightyClaw ~/mighty-craw
+
+            echo "✅ Server setup complete! Now run the Deploy workflow."
