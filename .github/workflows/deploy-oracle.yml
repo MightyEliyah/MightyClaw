@@ -34,13 +34,13 @@ jobs:
             git pull origin main
 
             # Write .env from GitHub secrets
-            cat > .env <<'ENVEOF'
-            OPENCLAW_GATEWAY_TOKEN=${{ secrets.OPENCLAW_GATEWAY_TOKEN }}
-            OPENROUTER_API_KEY=${{ secrets.OPEN_ROUTER_API }}
-            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-            DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT }}
-            WELCOME_CHANNEL_ID=${{ secrets.WELCOME_CHANNEL_ID }}
-            ENVEOF
+            printf '%s\n' \
+              'OPENCLAW_GATEWAY_TOKEN=${{ secrets.OPENCLAW_GATEWAY_TOKEN }}' \
+              'OPENROUTER_API_KEY=${{ secrets.OPEN_ROUTER_API }}' \
+              'GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}' \
+              'DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT }}' \
+              'WELCOME_CHANNEL_ID=${{ secrets.WELCOME_CHANNEL_ID }}' \
+              > .env
 
             # Deploy gateway config (state dir is mounted as volume)
             mkdir -p ~/.openclaw/state ~/.openclaw/logs/stability
@@ -50,6 +50,9 @@ jobs:
             # Rebuild and restart (no sudo — ubuntu is in docker group)
             docker compose build --pull
             docker compose up -d --remove-orphans
+
+            # Activate Discord channel if not already done
+            docker compose exec -T openclaw-gateway node dist/index.js channels status 2>/dev/null || true
 
             # Wait for gateway health
             echo "Waiting for gateway..."
