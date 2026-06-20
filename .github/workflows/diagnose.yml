@@ -16,11 +16,11 @@ jobs:
           timeout: 60s
           script: |
             cd ~/mighty-craw
-            echo "=== .env contents (masked) ==="
-            cat .env | sed 's/=.*/=***/'
+            echo "=== openclaw.json on host ==="
+            cat ~/.openclaw/openclaw.json 2>/dev/null || echo "FILE NOT FOUND"
             echo ""
-            echo "=== Docker containers ==="
-            docker compose ps
+            echo "=== DISCORD_BOT_TOKEN set? ==="
+            grep DISCORD_BOT_TOKEN .env | sed 's/=.*/=***/'
             echo ""
-            echo "=== Gateway logs (last 50 lines) ==="
-            docker compose logs --tail=50 openclaw-gateway
+            echo "=== Gateway startup logs ==="
+            docker compose logs --tail=100 openclaw-gateway 2>&1 | grep -i "discord\|error\|start\|channel\|token\|config" | head -40
