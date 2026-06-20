@@ -2,15 +2,16 @@
   // Mighty Craw — Gateway Configuration
   // Docs: https://docs.openclaw.ai/gateway/configuration
 
+  gateway: {
+    mode: "local",
+    bind: "lan",
+    port: 18789,
+  },
+
   agents: {
     defaults: {
-      // Bootstrap file loaded as the agent's system prompt
-      bootstrapFile: "SOUL.md",
       model: {
-        name: "claude-sonnet-4-6",
-      },
-      memory: {
-        enabled: true,
+        primary: "openrouter/anthropic/claude-sonnet-4-6",
       },
     },
     list: [
@@ -34,27 +35,21 @@
         id: "DISCORD_BOT_TOKEN",
       },
 
-      // Enable privileged gateway intents (must be enabled in Discord Dev Portal too)
+      // Privileged gateway intents (enable in Discord Dev Portal too)
       intents: {
-        messageContent: "enabled",
-        guildMembers: "enabled",
+        guildMembers: true,
       },
 
       // Default: respond only when @mentioned in servers
-      // Set requireMention: false per-guild to make it answer everything
       groupPolicy: "allowlist",
       dmPolicy: "pairing",
 
       guilds: {
         // Replace YOUR_SERVER_ID with your Discord server's ID
-        YOUR_SERVER_ID: {
-          requireMention: false,
-          // Restrict to specific channels (remove to allow all)
-          // channelIds: ["CHANNEL_ID_1", "CHANNEL_ID_2"],
-
-          // Welcome channel — new members get greeted here
-          welcomeChannelId: "YOUR_WELCOME_CHANNEL_ID",
-        },
+        // YOUR_SERVER_ID: {
+        //   requireMention: false,
+        //   welcomeChannelId: "YOUR_WELCOME_CHANNEL_ID",
+        // },
       },
 
       streaming: {
@@ -62,13 +57,10 @@
       },
 
       actions: {
-        send: true,
-        read: true,
-        react: true,
-        edit: true,
-        delete: false,
-        thread: true,
-        "member-info": true,
+        messages: true,
+        reactions: true,
+        threads: true,
+        memberInfo: true,
       },
     },
   },
