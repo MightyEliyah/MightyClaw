@@ -37,7 +37,7 @@ jobs:
             cat > .env <<'ENVEOF'
             OPENCLAW_GATEWAY_TOKEN=${{ secrets.OPENCLAW_GATEWAY_TOKEN }}
             OPENROUTER_API_KEY=${{ secrets.OPEN_ROUTER_API }}
-            DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+            DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT }}
             WELCOME_CHANNEL_ID=${{ secrets.WELCOME_CHANNEL_ID }}
             ENVEOF
 
